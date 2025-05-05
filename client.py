@@ -36,6 +36,16 @@ def get_full_name_from_first(first_name):
     :param first_name:
     :return: A string containing the first and last name of the first programmer in the list of matches.
     """
-    r = requests.get(BASE_URL + "api/programmers/by_first_name/{first_name}") #same thing but we're getting first names
+    r = requests.get(BASE_URL + f"api/programmers/by_first_name/{first_name}") #same thing but we're getting first names
+    if r.status_code != 200:
+        return None #same thing as earlier. if it doesnt return a 200 ok, return nothing
+    
+    people = r.json()
+    programmers = people.get("programmers", [])
+    if not programmers: #if they are not programmers, return nothing
+        return None
+    
+    first = programmers[0].get("first") #if there are programmers, return last and first name with spaces
+    last = programmers[0].get("last")
 
-    return ""
+    return f"{first} {last}"
